@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini Race Game</title>
+  <style>
+    body { margin:0; font-family:sans-serif; background:#0f172a; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh }
+    h1 { margin:16px 0 }
+    #game { position:relative; width:400px; height:600px; background:#222; overflow:hidden; border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,0.5) }
+    .road-line { position:absolute; width:6px; height:40px; background:#eee; left:50%; transform:translateX(-50%); }
+    .car { position:absolute; width:40px; height:70px; background:red; border-radius:6px; bottom:20px; left:180px; }
+    .npc { position:absolute; width:40px; height:70px; background:blue; border-radius:6px; }
+    #ui { margin-top:14px; text-align:center }
+    button { margin:6px; padding:8px 14px; border:none; border-radius:6px; background:#38bdf8; color:#000; font-weight:700; cursor:pointer }
+  </style>
+</head>
+<body>
+  <h1>🚗 Mini Race Game</h1>
+  <div id="game">
+    <div class="car" id="player"></div>
+  </div>
+  <div id="ui">
+    <div>Score: <span id="score">0</span></div>
+    <button id="startBtn">Start Game</button>
+  </div>
+
+<script>
+const game = document.getElementById('game');
+const player = document.getElementById('player');
+const scoreEl = document.getElementById('score');
+const startBtn = document.getElementById('startBtn');
+
+let gameInterval, npcInterval, lineInterval;
+let score = 0;
+let speed = 5;
+
+// movement control
+let posX = 180;
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowLeft' && posX>0){ posX -= 20; }
+  if(e.key==='ArrowRight' && posX<360){ posX += 20; }
+  player.style.left = posX+"px";
+});
+
+function startGame(){
+  game.innerHTML = '<div class="car" id="player"></div>';
+  score = 0; speed = 5; posX = 180;
+  scoreEl.textContent = score;
+  player = document.getElementById('player');
+  player.style.left = posX+"px";
+  // spawn road lines
+  for(let i=0;i<10;i++){
+    let line = document.createElement('div');
+    line.className='road-line';
+    line.style.top=(i*60)+'px';
+    game.appendChild(line);
+  }
+  // intervals
+  gameInterval = setInterval(updateGame, 30);
+  npcInterval = setInterval(spawnNpc, 2000);
+  lineInterval = setInterval(moveLines, 30);
+}
+
+function updateGame(){
+  score++;
+  scoreEl.textContent = score;
+  document.querySelectorAll('.npc').forEach(npc=>{
+    let top = parseInt(npc.style.top || '0');
+    npc.style.top = (top+speed)+'px';
+    // collision check
+    if(collision(player,npc)){
+      endGame();
+    }
+    if(top>600){ npc.remove(); }
+  });
+  speed = 5 + Math.floor(score/500);
+}
+
+function spawnNpc(){
+  const npc = document.createElement('div');
+  npc.className='npc';
+  npc.style.left = (Math.floor(Math.random()*10)*40)+'px';
+  npc.style.top = '-70px';
+  game.appendChild(npc);
+}
+
+function moveLines(){
+  document.querySelectorAll('.road-line').forEach(line=>{
+    let top = parseInt(line.style.top);
+    line.style.top = (top+speed)+'px';
+    if(top>600){ line.style.top='-40px'; }
+  });
+}
+
+function collision(a,b){
+  const ra = a.getBoundingClientRect();
+  const rb = b.getBoundingClientRect();
+  return !(ra.right<rb.left || ra.left>rb.right || ra.bottom<rb.top || ra.top>rb.bottom);
+}
+
+function endGame(){
+  clearInterval(gameInterval);
+  clearInterval(npcInterval);
+  clearInterval(lineInterval);
+  alert('Game Over! Score: '+score);
+}
+
+startBtn.addEventListener('click', ()=>{
+  clearInterval(gameInterval);
+  clearInterval(npcInterval);
+  clearInterval(lineInterval);
+  startGame();
+});
+</script>
+</body>
+</html>
