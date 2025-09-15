@@ -5,14 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mini Race Game</title>
   <style>
-    body { margin:0; font-family:sans-serif; background:#0f172a; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh }
+    body {
+      margin:0;
+      font-family:sans-serif;
+      background:#0f172a;
+      color:#fff;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh
+    }
     h1 { margin:16px 0 }
-    #game { position:relative; width:400px; height:600px; background:#222; overflow:hidden; border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,0.5) }
-    .road-line { position:absolute; width:6px; height:40px; background:#eee; left:50%; transform:translateX(-50%); }
-    .car { position:absolute; width:40px; height:70px; background:red; border-radius:6px; bottom:20px; left:180px; }
-    .npc { position:absolute; width:40px; height:70px; background:blue; border-radius:6px; }
+    #game {
+      position:relative;
+      width:400px;
+      height:600px;
+      background:#222;
+      overflow:hidden;
+      border-radius:10px;
+      box-shadow:0 6px 20px rgba(0,0,0,0.5)
+    }
+    .road-line {
+      position:absolute;
+      width:6px;
+      height:40px;
+      background:#eee;
+      left:50%;
+      transform:translateX(-50%);
+    }
+    .car {
+      position:absolute;
+      width:40px;
+      height:70px;
+      background:red;
+      border-radius:6px;
+      bottom:20px;
+      left:180px;
+    }
+    .npc {
+      position:absolute;
+      width:40px;
+      height:70px;
+      background:blue;
+      border-radius:6px;
+    }
     #ui { margin-top:14px; text-align:center }
-    button { margin:6px; padding:8px 14px; border:none; border-radius:6px; background:#38bdf8; color:#000; font-weight:700; cursor:pointer }
+    button {
+      margin:6px;
+      padding:8px 14px;
+      border:none;
+      border-radius:6px;
+      background:#38bdf8;
+      color:#000;
+      font-weight:700;
+      cursor:pointer
+    }
   </style>
 </head>
 <body>
@@ -27,7 +75,7 @@
 
 <script>
 const game = document.getElementById('game');
-const player = document.getElementById('player');
+let player = document.getElementById('player'); // pakai let agar bisa diubah
 const scoreEl = document.getElementById('score');
 const startBtn = document.getElementById('startBtn');
 
@@ -47,7 +95,7 @@ function startGame(){
   game.innerHTML = '<div class="car" id="player"></div>';
   score = 0; speed = 5; posX = 180;
   scoreEl.textContent = score;
-  player = document.getElementById('player');
+  player = document.getElementById('player'); // bisa di-reassign
   player.style.left = posX+"px";
   // spawn road lines
   for(let i=0;i<10;i++){
